@@ -34,7 +34,7 @@ public class Player {
      * 1. 스트라이크로 한 번에 프레임이 끝난 경우
      * 2. 스페어 까지 두 번에 프레임이 끝난 경우
      * 3. 10 프레임에서 보너스 기회를 얻은 경우
-     * */
+     */
     public void setFrameScore(int frame, int first) {
         scoreboard[frame].add(0, first);
     }
@@ -64,7 +64,7 @@ public class Player {
     /**
      * scoreboard의 프레임마다 결과를 가지고 오는 메서드
      * ArrayList가 동적으로 늘어나는 것을 이용하여 사이즈를 통해 구분하여 반환하도록 처리했다.
-     * */
+     */
     public List<Integer> getFrameScore(int frame) {
 
         List<Integer> frameScore = new ArrayList<>(1);
@@ -86,18 +86,20 @@ public class Player {
     /**
      * player가 scoreboard에 가지고 있는 값들을 통해 출력될 점수판에 알맞은 표기로 바꾸어주는 로직.
      * 알고자하는 frame과 player를 넘겨주면 scoreboard의 값을 변환하여 String으로 반환한다.
-     * */
-    public String getDisplayFrame(int frame, Player player){
+     */
+    public String getDisplayFrame(int frame, Player player) {
         try {
             if (player.getFrameScore(frame).size() == 1) { //스트라이크
                 return "X";
             }
+
             if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) { //스페어 성공
                 if (player.getFrameScore(frame).get(0) == 0) {
                     return "- | " + player.getFrameScore(frame).get(1);
                 }
                 return player.getFrameScore(frame).get(0) + " | /";
             }
+
             if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) < 10) { // 스페어 실패
                 if (player.getFrameScore(frame).get(0) == 0 && player.getFrameScore(frame).get(1) != 0) {
                     return "- | " + player.getFrameScore(frame).get(1);
@@ -110,6 +112,75 @@ public class Player {
                 }
                 return player.getFrameScore(frame).get(0) + " | " + player.getFrameScore(frame).get(1);
             }
+
+            if (frame == 9) {
+                StringBuilder result = new StringBuilder("");
+                if (player.getFrameScore(frame).get(0) == 10) { //스트라이크
+                    result.append("X");
+
+                    //스페어 성공
+                    if (player.getFrameScore(frame).get(1) + player.getFrameScore(frame).get(2) == 10) {
+                        return result.append(" | ")
+                                .append(player.getFrameScore(frame).get(1))
+                                .append(" | ")
+                                .append("/")
+                                .toString();
+                    }
+                    //스페어 실패
+                    if (player.getFrameScore(frame).get(1) + player.getFrameScore(frame).get(2) < 10) {
+                        return result.append(" | ")
+                                .append(player.getFrameScore(frame).get(1))
+                                .append(" | ")
+                                .append(player.getFrameScore(frame).get(1))
+                                .toString();
+                    }
+
+                    if (player.getFrameScore(frame).get(1) == 10) {
+                        result.append(" | ")
+                                .append("X");
+
+                        if (player.getFrameScore(frame).get(2) == 10) {
+                            return result.append(" | ")
+                                    .append("X")
+                                    .toString();
+                        }
+                        if (player.getFrameScore(frame).get(2) < 10) {
+                            return result.append(" | ")
+                                    .append(player.getFrameScore(frame).get(2))
+                                    .toString();
+                        }
+                    }
+                }
+
+                //스페어 성공
+                if (player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) {
+                    result.append(player.getFrameScore(frame).get(0))
+                            .append(" | ")
+                            .append("/");
+
+                    //보너스 스트라이크
+                    if (player.getFrameScore(frame).get(2) == 10) {
+                        return result.append(" | ")
+                                .append("X")
+                                .toString();
+                    }
+
+                    if (player.getFrameScore(frame).get(2) < 10) {
+                        return result.append(" | ")
+                                .append(player.getFrameScore(frame).get(2))
+                                .toString();
+                    }
+                }
+
+                //스페어 실패
+                if (player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) < 10) {
+                    return result.append(player.getFrameScore(frame).get(0))
+                            .append(" | ")
+                            .append(player.getFrameScore(frame).get(1))
+                            .toString();
+                }
+            }
+
             return "    ";
         } catch (IndexOutOfBoundsException e) {
 
