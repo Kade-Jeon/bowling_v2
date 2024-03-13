@@ -135,15 +135,18 @@ public class Player {
                                 .toString();
                     }
 
+                    //더블
                     if (player.getFrameScore(frame).get(1) == 10) {
                         result.append(" | ")
                                 .append("X");
 
+                        //터키
                         if (player.getFrameScore(frame).get(2) == 10) {
                             return result.append(" | ")
                                     .append("X")
                                     .toString();
                         }
+
                         if (player.getFrameScore(frame).get(2) < 10) {
                             return result.append(" | ")
                                     .append(player.getFrameScore(frame).get(2))

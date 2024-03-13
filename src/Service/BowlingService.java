@@ -221,7 +221,8 @@ public class BowlingService {
                 }
             }
 
-            if (frame == 9) {
+            if (frame == 9) { // 10프레임
+
                 // 1. 전전 프레임 점수가 계산되지 않은 경우 (스트라이크)
                 if (player.getFrameTotalScore(frame - 2) == 0) {
                     player.setFrameTotalScore(frame - 2,
