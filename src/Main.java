@@ -4,26 +4,22 @@ import Util.InputData;
 import Util.Message;
 
 
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
-
     public static void main(String[] args) {
-        Message message = new Message();
+
         BowlingService bowlingService = new BowlingService();
         InputData inputData = new InputData();
 
-        message.introImage();
+        Message.intro();
 
-        int people = inputData.numberOfPlayers();
-        List<Player> playerList = bowlingService.makePlayerList(people);
-
+        int numberOfPlayer = inputData.numberOfPlayers();
+        List<Player> playerList = bowlingService.makePlayerList(numberOfPlayer);
         bowlingService.playGame(playerList);
 
-        /*for (Player player : playerList) {
-            System.out.println(Arrays.toString(player.getScoreboard()));
-        }*/
-
+        Message.outro();
+        bowlingService.winnerList(playerList);
     }
 }
