@@ -3,11 +3,17 @@ package Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * name = 플레이어 이름
+ * scoreboard = 해당 프레임의 투구 결과
+ * totalScore = 해당 프레임의 점수 결과
+ */
 public class Player {
 
     private final String name;
-    private List<Integer>[] scoreboard;
+    private final List<Integer>[] scoreboard;
     private final int[] totalScore;
+
 
     public Player(String name) {
         this.name = name;
@@ -23,14 +29,12 @@ public class Player {
         return name;
     }
 
-    public int[] getTotalScore() {
-        return totalScore;
-    }
-
-    public List<Integer>[] getScoreboard() {
-        return scoreboard;
-    }
-
+    /**
+     * serFrameScore() 메서드는 오버로딩을 통해서 세 가지 케이스를 다룰 수 있게 구현했다.
+     * 1. 스트라이크로 한 번에 프레임이 끝난 경우
+     * 2. 스페어 까지 두 번에 프레임이 끝난 경우
+     * 3. 10 프레임에서 보너스 기회를 얻은 경우
+     * */
     public void setFrameScore(int frame, int first) {
         scoreboard[frame].add(0, first);
     }
@@ -57,8 +61,12 @@ public class Player {
         return totalScore[frame];
     }
 
+    /**
+     * scoreboard의 프레임마다 결과를 가지고 오는 메서드
+     * ArrayList가 동적으로 늘어나는 것을 이용하여 사이즈를 통해 구분하여 반환하도록 처리했다.
+     * */
     public List<Integer> getFrameScore(int frame) {
-        //ArrayList가 자동으로 늘어나는 것을 이용
+
         List<Integer> frameScore = new ArrayList<>(1);
         if (scoreboard[frame].size() == 1) {
             frameScore.add(scoreboard[frame].get(0));
@@ -73,5 +81,39 @@ public class Player {
         frameScore.add(scoreboard[frame].get(0));
         frameScore.add(scoreboard[frame].get(1));
         return frameScore;
+    }
+
+    /**
+     * player가 scoreboard에 가지고 있는 값들을 통해 출력될 점수판에 알맞은 표기로 바꾸어주는 로직.
+     * 알고자하는 frame과 player를 넘겨주면 scoreboard의 값을 변환하여 String으로 반환한다.
+     * */
+    public String getDisplayFrame(int frame, Player player){
+        try {
+            if (player.getFrameScore(frame).size() == 1) { //스트라이크
+                return "X";
+            }
+            if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) { //스페어 성공
+                if (player.getFrameScore(frame).get(0) == 0) {
+                    return "- | " + player.getFrameScore(frame).get(1);
+                }
+                return player.getFrameScore(frame).get(0) + " | /";
+            }
+            if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) < 10) { // 스페어 실패
+                if (player.getFrameScore(frame).get(0) == 0 && player.getFrameScore(frame).get(1) != 0) {
+                    return "- | " + player.getFrameScore(frame).get(1);
+                }
+                if (player.getFrameScore(frame).get(0) != 0 && player.getFrameScore(frame).get(1) == 0) {
+                    return player.getFrameScore(frame).get(0) + " | -";
+                }
+                if (player.getFrameScore(frame).get(0) == 0 && player.getFrameScore(frame).get(1) == 0) {
+                    return "- | -";
+                }
+                return player.getFrameScore(frame).get(0) + " | " + player.getFrameScore(frame).get(1);
+            }
+            return "    ";
+        } catch (IndexOutOfBoundsException e) {
+
+        }
+        return "    ";
     }
 }
