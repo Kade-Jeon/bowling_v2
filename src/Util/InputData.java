@@ -12,17 +12,18 @@ public class InputData {
     public int numberOfPlayers() {
         int numberOfPlayers;
         while (true) {
-            Message.askPeople();
+            Message.askNumberOfPlayer();
+
             try {
                 numberOfPlayers = scanner.nextInt();
-                if (1 > numberOfPlayers || numberOfPlayers > 4) { // First 입력 오류
+                if (1 > numberOfPlayers || numberOfPlayers > 4) { // 참가자 수 입력 오류
                     throw new InputOutOfRangeException("참가자 수는 1 ~ 4 사이의 값만 입력 가능합니다.");
                 }
                 break;
             } catch (InputOutOfRangeException e) {
-                System.out.println(e.getMessage());
+                Message.InputOutOfRangeExceptionPrint(e.getMessage());
             } catch (InputMismatchException e) {
-                System.out.println("숫자만 입력 가능합니다.");
+                Message.InputMismatchExceptionPrint();
                 scanner.nextLine();
             }
         }
