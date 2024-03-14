@@ -136,53 +136,28 @@ public class BowlingService {
                         player.getFrameTotalScore(frame - 1)
                                 + player.getFrameScore(frame).get(0)
                                 + player.getFrameScore(frame).get(1));
-
-                //1-1. 이전 프레임이 스페어 성공
-                if (player.getFrameScore(frame - 1).size() == 2 && player.getFrameScore(frame - 1).get(0) + player.getFrameScore(frame - 1).get(1) == 10) {
-                    player.setFrameTotalScore(frame - 1,
-                            player.getFrameTotalScore(frame - 2)
-                                    + player.getFrameScore(frame - 1).get(0)
-                                    + player.getFrameScore(frame - 1).get(1)
-                                    + player.getFrameScore(frame).get(0));
-                }
-
-                /*
-                  맨 처음과 코드가 중복인데 이는 아래와 같은 이유가 있다
-                  1. 1 프레임과 같이 이전 값이 없을 경우 바로 현재 프레임 스코어를 계산해야 하기 때문에 맨 위에 중복코드가 있고
-                  2. 이 코드는 위의 조건을 거쳐 온 후에 현재 프레임 스코어를 다시 계산해야 하기 때문에 있다.
-                  => 예외가 발생하면 발생한 곳 이후의 코드가 실행되지 않기 때문에 2가 없으면 1의 경우에 계산이 되지 않는 문제가 있기 때문.
-                */
-                player.setFrameTotalScore(frame,
-                        player.getFrameTotalScore(frame - 1)
-                                + player.getFrameScore(frame).get(0)
-                                + player.getFrameScore(frame).get(1));
-            }
-
-            //현 스페어 성공
-            if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) {
-                //이전 스페어 성공
-                if (player.getFrameScore(frame - 1).size() == 2 && player.getFrameScore(frame - 1).get(0) + player.getFrameScore(frame - 1).get(1) == 10) {
-                    player.setFrameTotalScore(frame - 1,
-                            player.getFrameTotalScore(frame - 2)
-                                    + player.getFrameScore(frame - 1).get(0)
-                                    + player.getFrameScore(frame - 1).get(1)
-                                    + player.getFrameScore(frame).get(0));
-                }
-            }
-            //현재 프레임이 스트라이크
-            if (player.getFrameScore(frame).size() == 1) {
-                //이전이 스페어 성공
-                if (player.getFrameScore(frame - 1).size() == 2 && player.getFrameScore(frame - 1).get(0) + player.getFrameScore(frame - 1).get(1) == 10) {
-                    player.setFrameTotalScore(frame - 1,
-                            player.getFrameTotalScore(frame - 2)
-                                    + player.getFrameScore(frame - 1).get(0)
-                                    + player.getFrameScore(frame - 1).get(1)
-                                    + player.getFrameScore(frame).get(0));
-                }
             }
 
 
-            // 이전 프레임이 스트라이크인 경우
+            //2. 이전 프레임이 스페어 성공
+            if (player.getFrameScore(frame - 1).size() == 2 && player.getFrameScore(frame - 1).get(0) + player.getFrameScore(frame - 1).get(1) == 10) {
+                player.setFrameTotalScore(frame - 1,
+                        player.getFrameTotalScore(frame - 2)
+                                + player.getFrameScore(frame - 1).get(0)
+                                + player.getFrameScore(frame - 1).get(1)
+                                + player.getFrameScore(frame).get(0));
+
+                //현 프레임이 스페어 실패
+                if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) < 10) {
+                    player.setFrameTotalScore(frame,
+                            player.getFrameTotalScore(frame - 1)
+                                    + player.getFrameScore(frame).get(0)
+                                    + player.getFrameScore(frame).get(1));
+                }
+
+            }
+
+            // 3. 이전 프레임이 스트라이크인 경우
             if (player.getFrameScore(frame - 1).size() == 1 && player.getFrameScore(frame).size() == 2) {
                 player.setFrameTotalScore(frame - 1,
                         player.getFrameTotalScore(frame - 2)
@@ -199,7 +174,7 @@ public class BowlingService {
                 }
             }
 
-            // 3. 전전 스트라이크 + 전 스트라이크 (더블)
+            // 4. 전전 스트라이크 + 전 스트라이크 (더블)
             if (player.getFrameScore(frame - 2).size() == 1 && player.getFrameScore(frame - 1).size() == 1) {
                 player.setFrameTotalScore(frame - 2,
                         player.getFrameTotalScore(frame - 3)
@@ -207,7 +182,7 @@ public class BowlingService {
                                 + player.getFrameScore(frame - 1).get(0)
                                 + player.getFrameScore(frame).get(0));
 
-                // 3-1. 현재 스페어 실패
+                // 4-1. 현재 스페어 실패
                 if (player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) < 10) {
                     player.setFrameTotalScore(frame - 1,
                             player.getFrameTotalScore(frame - 2)
@@ -221,7 +196,7 @@ public class BowlingService {
                                     + player.getFrameScore(frame).get(1));
                 }
 
-                // 3-2. 현재 스페어 성공
+                // 4-2. 현재 스페어 성공
                 if (player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) {
                     player.setFrameTotalScore(frame - 1,
                             player.getFrameTotalScore(frame - 2)
