@@ -146,7 +146,6 @@ public class BowlingService {
                                     + player.getFrameScore(frame).get(0));
                 }
 
-
                 /*
                   맨 처음과 코드가 중복인데 이는 아래와 같은 이유가 있다
                   1. 1 프레임과 같이 이전 값이 없을 경우 바로 현재 프레임 스코어를 계산해야 하기 때문에 맨 위에 중복코드가 있고
@@ -159,6 +158,17 @@ public class BowlingService {
                                 + player.getFrameScore(frame).get(1));
             }
 
+            //현 스페어 성공
+            if (player.getFrameScore(frame).size() == 2 && player.getFrameScore(frame).get(0) + player.getFrameScore(frame).get(1) == 10) {
+                //이전 스페어 성공
+                if (player.getFrameScore(frame - 1).size() == 2 && player.getFrameScore(frame - 1).get(0) + player.getFrameScore(frame - 1).get(1) == 10) {
+                    player.setFrameTotalScore(frame - 1,
+                            player.getFrameTotalScore(frame - 2)
+                                    + player.getFrameScore(frame - 1).get(0)
+                                    + player.getFrameScore(frame - 1).get(1)
+                                    + player.getFrameScore(frame).get(0));
+                }
+            }
             //현재 프레임이 스트라이크
             if (player.getFrameScore(frame).size() == 1) {
                 //이전이 스페어 성공
