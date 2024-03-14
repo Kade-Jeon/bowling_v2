@@ -131,7 +131,7 @@ public class Player {
                         return result.append(" | ")
                                 .append(player.getFrameScore(frame).get(1))
                                 .append(" | ")
-                                .append(player.getFrameScore(frame).get(1))
+                                .append(player.getFrameScore(frame).get(2))
                                 .toString();
                     }
 
