@@ -114,7 +114,7 @@ public class Player {
             }
 
             if (frame == 9) {
-                StringBuilder result = new StringBuilder("");
+                StringBuilder result = new StringBuilder();
                 if (player.getFrameScore(frame).get(0) == 10) { //스트라이크
                     result.append("X");
 
