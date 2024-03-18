@@ -1,6 +1,6 @@
-package Util;
+package util;
 
-import Exceptions.InputOutOfRangeException;
+import exceptions.InputOutOfRangeException;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;

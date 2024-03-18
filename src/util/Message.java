@@ -1,6 +1,6 @@
-package Util;
+package util;
 
-import Service.Player;
+import service.Player;
 
 import java.util.List;
 

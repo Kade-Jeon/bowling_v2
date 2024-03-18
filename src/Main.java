@@ -1,7 +1,7 @@
-import Service.BowlingService;
-import Service.Player;
-import Util.InputData;
-import Util.Message;
+import service.BowlingService;
+import service.Player;
+import util.InputData;
+import util.Message;
 
 
 import java.util.*;

@@ -1,8 +1,8 @@
-package Service;
+package service;
 
-import Exceptions.InputOutOfRangeException;
-import Util.InputData;
-import Util.Message;
+import exceptions.InputOutOfRangeException;
+import util.InputData;
+import util.Message;
 
 import java.util.*;
 
