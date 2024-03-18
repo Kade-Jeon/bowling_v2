@@ -1,3 +1,6 @@
+# 기간
+구현: 2024.03.12 ~ 2024.03.14
+
 # 목적
 볼링 점수 계산법이 2016년 커런트 프레임 스코어링(Current Frame Scoring)으로 바뀌면서 직관적이고 단순해졌다.
 하지만 전통적인 계산 방식은 현재 프레임의 점수가 경우에 따라서 다음, 혹은 다다음 투구의 결과 값에 따라서 정해지기 때문에 복잡한 부분이 있다.
@@ -38,13 +41,13 @@ v1에서 제기된 문제점은 아래와 같다.
 # 볼링 점수 계산 시스템 설계
 이번에는 각 클래스 별로 역할을 주어 크게 세 개로 구분하고자 했다.
 
-1. 입력 역할 (In) : `InputData.Class`
-2. 출력 역할 (Out) : `Message.Class`
-3. 게임 역할 (Business Logic) : `BowlingService.Class`
-4. 플레이어 객체 : `Player.Class`
+1. 입력 역할 (In) : `InputData.class`
+2. 출력 역할 (Out) : `Message.class`
+3. 게임 역할 (Business Logic) : `BowlingService.class`
+4. 플레이어 객체 : `Player.class`
 5. 커스텀 예외 : `InputOutOfRangeException`
 
-## 1. 입력 역할 (In) : `InputData.Class`
+## 1. 입력 역할 (In) : `InputData.class`
 - Scanner를 통해 입력 값을 받도록 하여 사용자로부터 입력받는 메서드는 모두 여기서 처리하도록 구현했다.
 - Scanner를 통해 외부로부터 입력받는 값은 정수(Integer)만 받게 되어 있는데, 여기서 만약 문자열(String)이 들어오면 무한 루프가 돌게된다. 
   따라서 이를 해결하기 위해 cleanBuffer() 메서드를 이용해 버퍼를 비워준다.
@@ -57,7 +60,7 @@ v1에서 제기된 문제점은 아래와 같다.
 
 ## 3. 게임 역할 (Business Logic) : `BowlingService.Class`
 게임 플레이와 직접적으로 관련이 있는 메서드는 모두 여기서 처리하도록 구현했다.
-특히, 점수를 계산하는 socreCalculator() 메서드는 외부에서 호출할 필요가 없기 때문에 접근 제어자를 private로 하였다.
+특히, 점수를 계산하는 scoreCalculator() 메서드는 외부에서 호출할 필요가 없기 때문에 접근 제어자를 private로 하였다.
 
 ## 4. 플레이어 객체 : `Player.Class`
 `Player.Class`는 name, scoreboard, totalScore를 갖고 게임에 참가하게 된다.
