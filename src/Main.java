@@ -15,11 +15,10 @@ public class Main {
 
         Message.intro();
 
-        int numberOfPlayer = inputData.numberOfPlayers();
-        List<Player> playerList = bowlingService.makePlayerList(numberOfPlayer);
-        bowlingService.playGame(playerList);
+        bowlingService.playGame(inputData.numberOfPlayers());
 
         Message.outro();
-        bowlingService.winnerList(playerList);
+
+        bowlingService.winnerList();
     }
 }
