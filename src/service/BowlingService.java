@@ -1,6 +1,5 @@
 package service;
 
-import exceptions.InputOutOfRangeException;
 import util.InputData;
 import util.Message;
 
@@ -9,15 +8,14 @@ import java.util.*;
 public class BowlingService {
 
     private final InputData inputData = new InputData();
+    private final List<Player> playerList = new ArrayList<>();
 
 
-    public List<Player> makePlayerList(int numberOfPlayer) {
-        List<Player> playerList = new ArrayList<>();
+    private void makePlayerList(int numberOfPlayer) {
         for (int i = 0; i < numberOfPlayer; i++) {
             Player player = new Player("Player" + (i + 1));
             playerList.add(player);
         }
-        return playerList;
     }
 
     /**
@@ -26,104 +24,60 @@ public class BowlingService {
      * 1. 1 ~ 9 프레임 케이스
      * 2. 10 프레임 케이스
      */
-    public void playGame(List<Player> playerList) {
+    public void playGame(int numberOfPlayer) {
+        makePlayerList(numberOfPlayer);
+
         for (int frame = 0; frame < 10; frame++) {
             Message.showRound(frame + 1);
 
             for (Player player : playerList) {
 
                 while (frame < 9) {
-                    Message.askFirst(player);
-                    try {
-                        int first = inputData.numberOfPin();
-                        if (0 > first || first > 10) { // First 입력 오류
-                            throw new InputOutOfRangeException("투구 결과는 0 ~ 10 사이의 값만 입력 가능합니다.");
-                        }
+                    int first = inputData.resultOfFirst(player);
+                    if (first == 10) { //STRIKE 성공, 1~9 라운드
+                        player.setFrameScore(frame, first);
+                        break;
+                    }
 
-                        if (first == 10) { //STRIKE 성공, 1~9 라운드
-                            player.setFrameScore(frame, first);
-                            break;
-                        }
-
-                        if (first < 10) { // STRIKE 실패
-                            Message.askSpare(player);
-                            int spare = inputData.numberOfPin();
-                            if (0 > spare || spare > 10 || first + spare > 10) { // Spare 입력 오류
-                                throw new InputOutOfRangeException("스페어 결과는 0 ~ " + (10 - first) + " 사이의 값만 입력 가능합니다. \n재입력 바랍니다.");
-                            }
-                            player.setFrameScore(frame, first, spare);
-                            break;
-                        }
-                    } catch (InputOutOfRangeException e) {
-                        Message.InputOutOfRangeExceptionPrint(e.getMessage());
-                    } catch (InputMismatchException e) {
-                        Message.InputMismatchExceptionPrint();
-                        inputData.cleanBuffer(); // 버퍼를 비워 주지 않으면 무한 반복이 일어 난다고 함...
+                    if (first < 10) { // STRIKE 실패
+                        int spare = inputData.resultOfSpare(player, first);
+                        player.setFrameScore(frame, first, spare);
+                        break;
                     }
                 }//while - 1~9 Frame  END
 
                 while (frame == 9) {
-                    try {
-                        Message.askFirst(player);
-                        int first = inputData.numberOfPin();
-                        if (0 > first || first > 10) { // First 입력 오류
-                            throw new InputOutOfRangeException("투구 결과는 0 ~ 10 사이의 값만 입력 가능합니다.");
-                        }
+                    int first = inputData.resultOfFirst(player);
+                    int spare = 0;
 
-                        int spare = 0;
-                        if (first == 10) {
-                            Message.askSpare(player);
-                            spare = inputData.numberOfPin();
-                            if (0 > spare || spare > 10) { // Spare 입력 오류
-                                throw new InputOutOfRangeException("스페어 결과는 0 ~ 10 사이의 값만 입력 가능합니다. \n재입력 바랍니다.");
-                            }
-                        }
+                    if (first == 10) {
+                        spare = inputData.resultOfSpare(player, first);
+                    }
+                    if (first < 10) {
+                        spare = inputData.resultOfSpare(player, first);
+                    }
 
-                        if (first < 10) {
-                            Message.askSpare(player);
-                            spare = inputData.numberOfPin();
-                            if (0 > spare || spare > 10 || first + spare > 10) { // Spare 입력 오류
-                                throw new InputOutOfRangeException("스페어 결과는 0 ~ " + (10 - first) + " 사이의 값만 입력 가능합니다. \n재입력 바랍니다.");
-                            }
-                        }
+                    if (first + spare == 20 || first + spare == 10) {
+                        int bonus = inputData.resultOfBonus(player, first, spare);
+                        player.setFrameScore(frame, first, spare, bonus);
+                        break;
+                    }
+                    if (first == 10 && spare < 10) {
+                        int bonus = inputData.resultOfBonus(player, first, spare);
+                        player.setFrameScore(frame, first, spare, bonus);
+                        break;
+                    }
 
-                        if (first + spare == 20 || first + spare == 10) {
-                            Message.askBonus(player);
-                            int bonus = inputData.numberOfPin();
-                            if (0 > bonus || bonus > 10) { // Bonus 입력 오류
-                                throw new InputOutOfRangeException("보너스 결과는 0 ~ 10 사이의 값만 입력 가능합니다. \n재입력 바랍니다.");
-                            }
-                            player.setFrameScore(frame, first, spare, bonus);
-                            break;
-                        }
-
-                        if (first == 10 && spare < 10) {
-                            Message.askBonus(player);
-                            int bonus = inputData.numberOfPin();
-                            if (0 > bonus || bonus > 10 || spare + bonus > 10) { // Bonus 입력 오류
-                                throw new InputOutOfRangeException("보너스 결과는 0 ~ " + (10 - spare) + " 사이의 값만 입력 가능합니다. \n재입력 바랍니다.");
-                            }
-                            player.setFrameScore(frame, first, spare, bonus);
-                            break;
-                        }
-
-                        if (first + spare < 10) { //STRIKE 또는 SPARE 실패하여 보너스 없는 경우
-                            player.setFrameScore(frame, first, spare);
-                            break;
-                        }
-
-                    } catch (InputOutOfRangeException e) {
-                        Message.InputOutOfRangeExceptionPrint(e.getMessage());
-                    } catch (InputMismatchException e) {
-                        Message.InputMismatchExceptionPrint();
-                        inputData.cleanBuffer(); // 버퍼를 비워 주지 않으면 무한 반복이 일어 난다고 함...
+                    if (first + spare < 10) { //STRIKE 또는 SPARE 실패하여 보너스 없는 경우
+                        player.setFrameScore(frame, first, spare);
+                        break;
                     }
                 }//while - 10 Frame  END
                 scoreCalculator(player, frame);
                 Message.showDisplayFrame(playerList);
             }//for - playerList END
         }//for - frame END
-    }
+    }//playGame() END
 
     /**
      * scoreCalculator() : 점수 계산 로직으로 외부에서는 호출할 필요가 없어 private으로 구현
@@ -243,14 +197,14 @@ public class BowlingService {
                                     + player.getFrameScore(frame).get(2));
                 }
             }
-        } catch (IndexOutOfBoundsException doNothing) {
+        } catch (IndexOutOfBoundsException ignore) {
         }
     }//scoreCalculator() END
 
     /**
      * winnerList() : 순위 구현 로직
      */
-    public void winnerList(List<Player> playerList) {
+    public void winnerList() {
         List<Player> resultList = new ArrayList<>(playerList);
         resultList.sort(Comparator.comparing(player -> player.getFrameTotalScore(9), Comparator.reverseOrder()));
 
